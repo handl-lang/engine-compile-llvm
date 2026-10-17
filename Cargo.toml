@@ -10,8 +10,8 @@ repository.workspace = true
 # ADR-0128 Phase 6: platform crates are git deps; the workspace-root
 # `[patch]` resolves them from the sibling `../platform` checkout.
 handl-plugin-compile = { git = "https://github.com/handl-lang/platform", branch = "main" }
-handl-language = { git = "https://github.com/handl-lang/platform", branch = "main" }
-plugin-engine = { git = "https://github.com/handl-lang/platform", branch = "main" }
+handl-language = { git = "https://github.com/handl-lang/kernel", branch = "main" }
+plugin-engine = { git = "https://github.com/handl-lang/kernel", branch = "main" }
 plugin-engine-typecheck = { git = "https://github.com/handl-lang/platform", branch = "main", package = "handl-plugin-engine-typecheck" }
 serde_json = "1"
 
