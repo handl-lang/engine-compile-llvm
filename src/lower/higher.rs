@@ -1,7 +1,7 @@
 //! Lowering for higher-order `Term` combinators.
 
 use handl_plugin_compile::CompileError;
-use plugin_engine::Term;
+use hnl_engine::Term;
 
 use crate::lower::LlvmContext;
 

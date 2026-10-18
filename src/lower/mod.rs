@@ -12,7 +12,7 @@ use handl_plugin_compile::CompileError;
 #[cfg(feature = "inkwell")]
 use inkwell::values::{BasicValueEnum, PointerValue};
 #[cfg(feature = "inkwell")]
-use plugin_engine::Term;
+use hnl_engine::Term;
 
 /// Compilation context for the current LLVM module.
 #[cfg(feature = "inkwell")]
@@ -129,7 +129,7 @@ pub fn lower_term<'ctx>(
 #[cfg(not(feature = "inkwell"))]
 use handl_plugin_compile::CompileError;
 #[cfg(not(feature = "inkwell"))]
-use plugin_engine::Term;
+use hnl_engine::Term;
 
 /// Stub context when `inkwell` is not enabled.
 #[cfg(not(feature = "inkwell"))]

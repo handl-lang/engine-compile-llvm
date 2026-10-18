@@ -7,7 +7,7 @@
 //! reached and were removed.
 
 use handl_plugin_compile::CompileError;
-use plugin_engine::{RewriteWitness, Term};
+use hnl_engine::{RewriteWitness, Term};
 
 use crate::lower::LlvmContext;
 

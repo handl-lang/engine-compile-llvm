@@ -4,8 +4,8 @@ use handl_language::{Ast, AstNode, Language};
 use handl_plugin_compile::{
     ArtifactContent, CompileError, Compiler, CompilerInput, CompilerOutput,
 };
-use plugin_engine::{ArrSource, RewriteWitness, Term};
-use plugin_engine_typecheck::TypecheckReport;
+use hnl_engine::{ArrSource, RewriteWitness, Term};
+use hnl_engine_typecheck::TypecheckReport;
 use serde_json::Value;
 
 use crate::{

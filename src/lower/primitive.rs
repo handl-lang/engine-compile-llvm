@@ -2,7 +2,7 @@
 
 use handl_plugin_compile::CompileError;
 use inkwell::values::{BasicValueEnum, PointerValue};
-use plugin_engine::Term;
+use hnl_engine::Term;
 
 use crate::lower::{LlvmContext, lower_term};
 

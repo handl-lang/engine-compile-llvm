@@ -11,8 +11,8 @@ repository.workspace = true
 # `[patch]` resolves them from the sibling `../platform` checkout.
 handl-plugin-compile = { git = "https://github.com/handl-lang/platform", branch = "main" }
 handl-language = { git = "https://github.com/handl-lang/kernel", branch = "main" }
-plugin-engine = { git = "https://github.com/handl-lang/kernel", branch = "main" }
-plugin-engine-typecheck = { git = "https://github.com/handl-lang/platform", branch = "main", package = "handl-plugin-engine-typecheck" }
+hnl-engine = { git = "https://github.com/handl-lang/engine", branch = "main" }
+hnl-engine-typecheck = { git = "https://github.com/handl-lang/engine-typecheck", branch = "main" }
 serde_json = "1"
 
 inkwell = { version = "0.5", optional = true }
