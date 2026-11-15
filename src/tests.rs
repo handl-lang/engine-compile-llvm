@@ -247,6 +247,7 @@ fn phase9_terms() -> Vec<Term> {
             args: vec![],
             source: ArrSource::Native,
             lit: None,
+            attrs: None,
         },
     ]
 }
