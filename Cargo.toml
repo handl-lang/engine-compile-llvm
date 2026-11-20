@@ -5,6 +5,9 @@ edition = "2024"
 description = "LLVM compiler for the Handl arrow calculus (ADR-0114 Phase 8)."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/handl-lang/compile-llvm"
+readme = "README.md"
+keywords = ["handl", "llvm", "compiler"]
+categories = ["compilers"]
 
 [dependencies]
 # ADR-0128 Phase 6: platform crates are git deps; the workspace-root
