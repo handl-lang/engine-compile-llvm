@@ -242,6 +242,7 @@ fn phase9_terms() -> Vec<Term> {
             body: Box::new(Term::constant(Value::Null)),
             target: "io".to_string(),
             impl_: Box::new(Term::constant(Value::Null)),
+            acc: None,
         },
         Term::Rewrite {
             source: Box::new(Term::constant(Value::Null)),

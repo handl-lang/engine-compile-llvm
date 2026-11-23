@@ -26,12 +26,17 @@ pub fn lower_child<'ctx>(
 
 /// Lower `Handle` by lowering the body, treating the capability as a
 /// placeholder substitution for now.
+///
+/// `acc` (the handler accumulator seed) is accepted but ignored, exactly
+/// like `_impl_`: real handler support is still pending, and `handle`
+/// already lowers to just its body.
 #[cfg(feature = "inkwell")]
 pub fn lower_handle<'ctx>(
     ctx: &mut LlvmContext<'ctx>,
     body: &Term,
     _target: &str,
     _impl_: &Term,
+    _acc: Option<&Term>,
     input: PointerValue<'ctx>,
 ) -> Result<BasicValueEnum<'ctx>, CompileError> {
     lower_term(ctx, body, input)
@@ -54,6 +59,7 @@ pub fn lower_handle<'ctx>(
     _body: &Term,
     _target: &str,
     _impl_: &Term,
+    _acc: Option<&Term>,
     _input: (),
 ) -> Result<(), CompileError> {
     Ok(())

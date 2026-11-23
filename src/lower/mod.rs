@@ -116,7 +116,8 @@ pub fn lower_term<'ctx>(
             body,
             target,
             impl_,
-        } => higher::lower_handle(ctx, body, target, impl_, input),
+            acc,
+        } => higher::lower_handle(ctx, body, target, impl_, acc.as_deref(), input),
         Term::Rewrite {
             source,
             target,
@@ -185,7 +186,8 @@ pub fn lower_term<'ctx>(
             body,
             target,
             impl_,
-        } => higher::lower_handle(ctx, body, target, impl_, ()),
+            acc,
+        } => higher::lower_handle(ctx, body, target, impl_, acc.as_deref(), ()),
         Term::Rewrite {
             source,
             target,
