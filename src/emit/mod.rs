@@ -1,4 +1,4 @@
-//! IR -> .o (or placeholder) emission.
+//! IR -> .o emission (requires the `inkwell` feature).
 
 #![allow(unsafe_code)]
 
@@ -23,10 +23,4 @@ pub fn emit_ir<'ctx>(ctx: &LlvmContext<'ctx>) -> Result<String, CompileError> {
     } else {
         Ok(s)
     }
-}
-
-/// Placeholder for object emission when `inkwell` is unavailable.
-#[cfg(not(feature = "inkwell"))]
-pub fn emit_placeholder() -> &'static str {
-    "LLVM object emission is only available with the `inkwell` feature."
 }

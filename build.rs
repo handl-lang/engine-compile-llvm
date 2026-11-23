@@ -9,7 +9,7 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
 
     if std::env::var("CARGO_FEATURE_INKWELL").is_err() {
-        println!("cargo:warning=inkwell feature disabled; LLVM backend is a placeholder.");
+        println!("cargo:warning=inkwell feature disabled; compile() will return an error. Enable `--features inkwell` (requires llvm-config) for real LLVM codegen.");
         return;
     }
 

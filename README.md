@@ -4,6 +4,21 @@
 Part of the `engine-compile-*` compiler-backend family: lowers Handl `Term` arrow
 terms to LLVM IR.
 
+## `inkwell` feature (required for real codegen)
+
+The `inkwell` cargo feature is **off by default** and is required for actual
+LLVM compilation: it pulls in the `inkwell` crate, whose `build.rs` needs
+`llvm-config` on `PATH` (i.e. a local LLVM installation).
+
+```bash
+cargo build --features inkwell   # real LLVM backend
+cargo build                      # default: compile() fails loudly
+```
+
+Without the feature, `LlvmCompiler::compile()` and `DefaultObjectWriter::write()`
+return an error naming the missing `inkwell` feature — they no longer emit a
+placeholder object. Do not enable the feature in environments without LLVM.
+
 ## Development
 
 ```bash

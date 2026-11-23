@@ -19,7 +19,11 @@ pub struct DefaultObjectWriter;
 impl ObjectWriter for DefaultObjectWriter {
     #[cfg(not(feature = "inkwell"))]
     fn write(&self, _triple: &str, _ir: &str, _passes: &[String]) -> Result<Vec<u8>, CompileError> {
-        Ok(b"<inkwell disabled>".to_vec())
+        Err(CompileError::Emit(
+            "object emission requires the `inkwell` feature; \
+             rebuild with `--features inkwell` (requires llvm-config / LLVM)"
+                .to_string(),
+        ))
     }
 
     #[cfg(feature = "inkwell")]

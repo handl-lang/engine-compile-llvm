@@ -1,9 +1,9 @@
 //! Unit tests for the LLVM compiler.
 
 use handl_language::{Ast, AstNode, Language};
-use handl_plugin_compile::{
-    ArtifactContent, CompileError, Compiler, CompilerInput, CompilerOutput,
-};
+#[cfg(feature = "inkwell")]
+use handl_plugin_compile::CompileError;
+use handl_plugin_compile::{Compiler, CompilerInput, CompilerOutput};
 use hnl_engine::{ArrSource, RewriteWitness, Term};
 use hnl_engine_typecheck::TypecheckReport;
 use serde_json::Value;
@@ -22,9 +22,11 @@ fn input(term: Term) -> CompilerInput {
     CompilerInput::new(source, ast, root, language, term, report)
 }
 
+#[cfg(feature = "inkwell")]
 #[derive(Debug)]
 struct MockWriter;
 
+#[cfg(feature = "inkwell")]
 impl ObjectWriter for MockWriter {
     fn write(&self, _triple: &str, _ir: &str, _passes: &[String]) -> Result<Vec<u8>, CompileError> {
         Ok(b"mock object".to_vec())
@@ -50,20 +52,13 @@ fn aarch64_triple_is_correct() {
 
 #[cfg(not(feature = "inkwell"))]
 #[test]
-fn placeholder_output_for_const() {
+fn compile_without_inkwell_feature_fails() {
     let cfg = LlvmConfig::new(Box::new(X86_64));
-    let output = LlvmCompiler::new()
+    let err = LlvmCompiler::new()
         .compile(&input(Term::constant(Value::Null)), &cfg)
-        .unwrap();
-    assert_eq!(output.target(), "llvm");
-    assert_eq!(output.artifacts().len(), 1);
-    let artifact = &output.artifacts()[0];
-    assert!(artifact.name.ends_with(".o"), "{:?}", artifact);
-    assert_eq!(
-        artifact.content,
-        ArtifactContent::Bytes(b"<inkwell disabled>".to_vec())
-    );
-    assert_eq!(output.primary_output().unwrap(), &b"<inkwell disabled>"[..]);
+        .unwrap_err();
+    let msg = format!("{err}");
+    assert!(msg.contains("inkwell"), "{msg}");
 }
 
 #[cfg(not(feature = "inkwell"))]
@@ -79,15 +74,15 @@ fn dispatcher_branches_for_phase9_terms() {
 
 #[cfg(not(feature = "inkwell"))]
 #[test]
-fn placeholder_output_for_phase9_terms() {
+fn compile_without_inkwell_feature_fails_for_phase9_terms() {
     let cfg = LlvmConfig::new(Box::new(X86_64));
     for term in phase9_terms() {
-        let output = LlvmCompiler::new().compile(&input(term), &cfg).unwrap();
-        assert_eq!(output.artifacts().len(), 1);
-        assert!(output.artifacts()[0].name.ends_with(".o"));
+        let err = LlvmCompiler::new().compile(&input(term), &cfg).unwrap_err();
+        assert!(format!("{err}").contains("inkwell"), "{err}");
     }
 }
 
+#[cfg(feature = "inkwell")]
 #[test]
 fn compiler_uses_supplied_object_writer() {
     let cfg = LlvmConfig::new(Box::new(X86_64));
@@ -100,10 +95,12 @@ fn compiler_uses_supplied_object_writer() {
 
 #[cfg(not(feature = "inkwell"))]
 #[test]
-fn default_object_writer_returns_placeholder() {
+fn default_object_writer_fails_without_inkwell() {
     let writer = DefaultObjectWriter;
-    let bytes = writer.write("x86_64-unknown-unknown", "; ir", &[]).unwrap();
-    assert_eq!(bytes, b"<inkwell disabled>");
+    let err = writer
+        .write("x86_64-unknown-unknown", "; ir", &[])
+        .unwrap_err();
+    assert!(format!("{err}").contains("inkwell"), "{err}");
 }
 
 #[cfg(feature = "inkwell")]
@@ -175,12 +172,22 @@ fn pass_list_round_trip() {
 
 #[cfg(not(feature = "inkwell"))]
 #[test]
-fn default_object_writer_unknown_pass_is_placeholder() {
+fn default_object_writer_fails_before_pass_validation() {
     let writer = DefaultObjectWriter;
-    let bytes = writer
+    let err = writer
         .write("x86_64-unknown-unknown", "; ir", &["unknown".to_string()])
-        .unwrap();
-    assert_eq!(bytes, b"<inkwell disabled>");
+        .unwrap_err();
+    assert!(format!("{err}").contains("inkwell"), "{err}");
+}
+
+#[cfg(feature = "inkwell")]
+#[test]
+fn default_object_writer_rejects_unknown_pass() {
+    let writer = DefaultObjectWriter;
+    let err = writer
+        .write("x86_64-unknown-unknown", "; ir", &["unknown".to_string()])
+        .unwrap_err();
+    assert!(format!("{err}").contains("unknown pass"), "{err}");
 }
 
 #[test]
@@ -193,10 +200,14 @@ fn llvm_output_stream_writes_object() {
 
 #[cfg(not(feature = "inkwell"))]
 #[test]
-fn llvm_build_script_warns_when_inkwell_off() {
-    let writer = DefaultObjectWriter;
-    let bytes = writer.write("x86_64-unknown-unknown", "; ir", &[]).unwrap();
-    assert_eq!(bytes, b"<inkwell disabled>");
+fn compile_error_names_missing_inkwell_feature() {
+    let cfg = LlvmConfig::new(Box::new(X86_64));
+    let err = LlvmCompiler::new()
+        .compile(&input(Term::constant(Value::Null)), &cfg)
+        .unwrap_err();
+    let msg = format!("{err}");
+    assert!(msg.contains("inkwell"), "{msg}");
+    assert!(msg.contains("--features inkwell"), "{msg}");
 }
 
 #[cfg(feature = "inkwell")]

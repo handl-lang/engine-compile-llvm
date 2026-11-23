@@ -4,6 +4,7 @@ use handl_plugin_compile::{CompileError, Compiler, CompilerConfig, CompilerInput
 
 use crate::config::LlvmConfig;
 use crate::emit::{DefaultObjectWriter, ObjectWriter};
+#[cfg(feature = "inkwell")]
 use crate::output::LlvmOutput;
 
 /// LLVM compiler for the Handl arrow calculus.
@@ -43,10 +44,9 @@ where
             .downcast_ref::<LlvmConfig>()
             .ok_or_else(|| CompileError::InvalidInput("expected LlvmConfig".to_string()))?;
 
-        let triple = cfg.target.triple();
-
         #[cfg(feature = "inkwell")]
         {
+            let triple = cfg.target.triple();
             use inkwell::context::Context;
 
             use crate::emit::emit_ir;
@@ -64,9 +64,12 @@ where
 
         #[cfg(not(feature = "inkwell"))]
         {
-            let _ = input;
-            let object = self.writer.write(triple, "", cfg.passes())?;
-            Ok(Box::new(LlvmOutput::from_object(triple, object)))
+            let _ = (&input, &self.writer, cfg);
+            Err(CompileError::Other(
+                "handl-plugin-compile-llvm was built without the `inkwell` feature; \
+                 rebuild with `--features inkwell` (requires llvm-config / LLVM)"
+                    .to_string(),
+            ))
         }
     }
 

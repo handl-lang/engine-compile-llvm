@@ -1,7 +1,7 @@
 //! Criterion benchmark for the LLVM compiler.
 //!
-//! Since `inkwell` is off by default, this measures the placeholder compile
-//! path. The harness is real; full measurement requires the `inkwell` feature.
+//! Requires the `inkwell` feature (`cargo bench --features inkwell`);
+//! without it `compile()` returns an error naming the missing feature.
 
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 use handl_language::{Ast, AstNode, Language};
