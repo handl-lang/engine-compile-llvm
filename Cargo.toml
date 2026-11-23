@@ -21,9 +21,9 @@ serde_json = "1"
 inkwell = { version = "0.5", optional = true }
 # PL-004 T-092: desired-state codegen kernel (`handl-term` feature
 # provides `impl IrModule` for `handl_calculus::Term`, which
-# `hnl_engine::Term` re-exports). Path dep — engine-codegen has no git
-# remote; the sibling checkout is the resolution.
-hnl-engine-codegen = { path = "../engine-codegen", features = ["handl-term"] }
+# `hnl_engine::Term` re-exports). Git dep — the sibling checkout wins
+# via `[patch]`.
+hnl-engine-codegen = { git = "https://github.com/handl-lang/engine-codegen", branch = "main", features = ["handl-term"] }
 
 [dev-dependencies]
 criterion = "0.5"
@@ -35,6 +35,9 @@ harness = false
 [features]
 default = []
 inkwell = ["dep:inkwell"]
+
+[patch."https://github.com/handl-lang/engine-codegen"]
+hnl-engine-codegen = { path = "../engine-codegen" }
 
 [patch."https://github.com/handl-lang/engine"]
 hnl-engine = { path = "../engine" }
