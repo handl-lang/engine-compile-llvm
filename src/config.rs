@@ -30,6 +30,14 @@ pub struct LlvmConfig {
     /// Whether debug information should be emitted.
     pub debug: bool,
     /// Whether to emit a native object file instead of LLVM IR text.
+    ///
+    /// **Currently dead config** — nothing reads this field: the
+    /// backend always emits a native object (`<triple>.o`), and the
+    /// kernel `Emitter` path deliberately ignores it too (see
+    /// `compiler.rs`). `ext-compile` sets it from `--format`, so the
+    /// field is kept for API compatibility; honouring it (emitting
+    /// `main.ll` IR text when `false`) or removing it are tracked
+    /// follow-ups that touch the host-side driver.
     pub emit_object: bool,
     /// LLVM optimization/verification passes to run before object emission.
     pub passes: Vec<String>,

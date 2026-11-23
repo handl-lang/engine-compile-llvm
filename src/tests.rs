@@ -263,3 +263,97 @@ fn phase9_terms() -> Vec<Term> {
         },
     ]
 }
+
+// --- PL-004 T-092: kernel `Emitter<Term>` path -------------------------
+
+#[test]
+fn materialize_rejects_unknown_target() {
+    use hnl_engine_codegen::{CodegenError, EmitContext, Emitter as _};
+
+    let req = EmitContext::new().with_config("target", "mips");
+    let err = LlvmCompiler::new()
+        .materialize(&Term::constant(Value::Null), &req)
+        .unwrap_err();
+    assert!(
+        matches!(err, CodegenError::Unsupported(_)),
+        "expected Unsupported, got {err}"
+    );
+}
+
+#[cfg(not(feature = "inkwell"))]
+#[test]
+fn materialize_without_inkwell_feature_fails() {
+    use hnl_engine_codegen::{EmitContext, Emitter as _};
+
+    let err = LlvmCompiler::new()
+        .materialize(&Term::constant(Value::Null), &EmitContext::new())
+        .unwrap_err();
+    let msg = format!("{err}");
+    assert!(msg.contains("inkwell"), "{msg}");
+}
+
+#[cfg(feature = "inkwell")]
+#[test]
+fn materialize_matches_compile_artifact() {
+    use hnl_engine_codegen::{EmitContext, Emitter as _};
+
+    let term = Term::constant(Value::Null);
+    let compiler = LlvmCompiler::with_writer(MockWriter);
+    let cfg = LlvmConfig::new(Box::new(X86_64));
+    let expected = compiler.compile(&input(term.clone()), &cfg).unwrap();
+
+    let changes = compiler
+        .materialize(&term, &EmitContext::new())
+        .expect("materialize");
+    assert_eq!(changes.len(), 1);
+    let artifact = expected.artifacts().first().unwrap();
+    assert_eq!(artifact.name, "x86_64_unknown_unknown.o");
+    assert_eq!(changes[0].artifact().as_str(), artifact.name);
+    assert_eq!(changes[0].content().unwrap(), &b"mock object"[..]);
+}
+
+#[cfg(feature = "inkwell")]
+#[test]
+fn materialize_honours_ctx_target_and_passes() {
+    use hnl_engine_codegen::{EmitContext, Emitter as _};
+
+    /// Writer that records the triple/passes it was asked to emit.
+    #[derive(Debug)]
+    struct RecordingWriter {
+        seen: std::sync::Arc<std::sync::Mutex<Vec<(String, Vec<String>)>>>,
+    }
+
+    impl ObjectWriter for RecordingWriter {
+        fn write(
+            &self,
+            triple: &str,
+            _ir: &str,
+            passes: &[String],
+        ) -> Result<Vec<u8>, CompileError> {
+            self.seen
+                .lock()
+                .unwrap()
+                .push((triple.to_string(), passes.to_vec()));
+            Ok(b"obj".to_vec())
+        }
+    }
+
+    let seen = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+    let compiler = LlvmCompiler::with_writer(RecordingWriter { seen: seen.clone() });
+    let req = EmitContext::new()
+        .with_config("target", "aarch64")
+        .with_config("passes", "instcombine, gvn");
+    let changes = compiler
+        .materialize(&Term::constant(Value::Null), &req)
+        .expect("materialize");
+    assert_eq!(changes.len(), 1);
+    assert_eq!(changes[0].artifact().as_str(), "aarch64_unknown_unknown.o");
+    let seen = seen.lock().unwrap();
+    assert_eq!(
+        seen.as_slice(),
+        &[(
+            "aarch64-unknown-unknown".to_string(),
+            vec!["instcombine".to_string(), "gvn".to_string()]
+        )]
+    );
+}

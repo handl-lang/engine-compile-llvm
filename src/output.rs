@@ -13,11 +13,18 @@ pub struct LlvmOutput {
     object: Vec<u8>,
 }
 
+/// Artifact name for the compiled object of `triple`
+/// (`x86_64-unknown-unknown` → `x86_64_unknown_unknown.o`) — shared by
+/// [`LlvmOutput::from_object`] and the kernel `Emitter` path.
+pub(crate) fn object_artifact_name(triple: &str) -> String {
+    format!("{}.o", triple.replace('-', "_"))
+}
+
 impl LlvmOutput {
     /// Create an output from a compiled object byte buffer.
     pub fn from_object(triple: impl Into<String>, object: Vec<u8>) -> Self {
         let triple = triple.into();
-        let name = format!("{}.o", triple.replace('-', "_"));
+        let name = object_artifact_name(&triple);
         Self {
             target: "llvm".to_string(),
             triple,
