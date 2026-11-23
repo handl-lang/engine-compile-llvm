@@ -1,7 +1,7 @@
-# engine-compile-llvm
+# tool-compile-llvm
 
 `handl-plugin-compile-llvm` — LLVM compiler for the Handl arrow calculus.
-Part of the `engine-compile-*` compiler-backend family: lowers Handl `Term` arrow
+Part of the `tool-compile-*` compiler-backend family: lowers Handl `Term` arrow
 terms to LLVM IR.
 
 ## `inkwell` feature (required for real codegen)

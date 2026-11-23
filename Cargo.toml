@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 description = "LLVM compiler for the Handl arrow calculus (ADR-0114 Phase 8)."
 license = "MIT"
-repository = "https://github.com/handl-lang/engine-compile-llvm"
+repository = "https://github.com/handl-lang/tool-compile-llvm"
 readme = "README.md"
 keywords = ["handl", "llvm", "compiler"]
 categories = ["compilers"]
@@ -15,7 +15,7 @@ categories = ["compilers"]
 handl-plugin-compile = { git = "https://github.com/handl-lang/host", branch = "main" }
 handl-language = { git = "https://github.com/handl-lang/kernel", branch = "main" }
 hnl-engine = { git = "https://github.com/handl-lang/engine", branch = "main" }
-hnl-engine-typecheck = { git = "https://github.com/handl-lang/engine-typecheck", branch = "main" }
+hnl-tool-typecheck = { git = "https://github.com/handl-lang/tool-typecheck", branch = "main" }
 serde_json = "1"
 
 inkwell = { version = "0.5", optional = true }
@@ -23,7 +23,7 @@ inkwell = { version = "0.5", optional = true }
 # provides `impl IrModule` for `handl_calculus::Term`, which
 # `hnl_engine::Term` re-exports). Git dep — the sibling checkout wins
 # via `[patch]`.
-hnl-engine-codegen = { git = "https://github.com/handl-lang/engine-codegen", branch = "main", features = ["handl-term"] }
+hnl-tool-codegen = { git = "https://github.com/handl-lang/tool-codegen", branch = "main", features = ["handl-term"] }
 
 [dev-dependencies]
 criterion = "0.5"
@@ -36,26 +36,26 @@ harness = false
 default = []
 inkwell = ["dep:inkwell"]
 
-[patch."https://github.com/handl-lang/engine-codegen"]
-hnl-engine-codegen = { path = "../engine-codegen" }
+[patch."https://github.com/handl-lang/tool-codegen"]
+hnl-tool-codegen = { path = "../tool-codegen" }
 
 [patch."https://github.com/handl-lang/engine"]
 hnl-engine = { path = "../engine" }
 
-[patch."https://github.com/handl-lang/engine-lex"]
-hnl-engine-lex = { path = "../engine-lex" }
+[patch."https://github.com/handl-lang/tool-lex"]
+hnl-tool-lex = { path = "../tool-lex" }
 
-[patch."https://github.com/handl-lang/engine-lex-pattern"]
-hnl-engine-lex-pattern = { path = "../engine-lex-pattern" }
+[patch."https://github.com/handl-lang/tool-lex-pattern"]
+hnl-tool-lex-pattern = { path = "../tool-lex-pattern" }
 
-[patch."https://github.com/handl-lang/engine-parse"]
-hnl-engine-parse = { path = "../engine-parse" }
+[patch."https://github.com/handl-lang/tool-parse"]
+hnl-tool-parse = { path = "../tool-parse" }
 
-[patch."https://github.com/handl-lang/engine-parse-pratt"]
-hnl-engine-parse-pratt = { path = "../engine-parse-pratt" }
+[patch."https://github.com/handl-lang/tool-parse-pratt"]
+hnl-tool-parse-pratt = { path = "../tool-parse-pratt" }
 
-[patch."https://github.com/handl-lang/engine-typecheck"]
-hnl-engine-typecheck = { path = "../engine-typecheck" }
+[patch."https://github.com/handl-lang/tool-typecheck"]
+hnl-tool-typecheck = { path = "../tool-typecheck" }
 
 [patch."https://github.com/handl-lang/kernel"]
 handl-calculus = { path = "../kernel/crates/handl-calculus" }

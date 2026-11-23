@@ -5,7 +5,7 @@ use handl_language::{Ast, AstNode, Language};
 use handl_plugin_compile::CompileError;
 use handl_plugin_compile::{Compiler, CompilerInput, CompilerOutput};
 use hnl_engine::{ArrSource, RewriteWitness, Term};
-use hnl_engine_typecheck::TypecheckReport;
+use hnl_tool_typecheck::TypecheckReport;
 use serde_json::Value;
 
 use crate::{
@@ -268,7 +268,7 @@ fn phase9_terms() -> Vec<Term> {
 
 #[test]
 fn materialize_rejects_unknown_target() {
-    use hnl_engine_codegen::{CodegenError, EmitContext, Emitter as _};
+    use hnl_tool_codegen::{CodegenError, EmitContext, Emitter as _};
 
     let req = EmitContext::new().with_config("target", "mips");
     let err = LlvmCompiler::new()
@@ -283,7 +283,7 @@ fn materialize_rejects_unknown_target() {
 #[cfg(not(feature = "inkwell"))]
 #[test]
 fn materialize_without_inkwell_feature_fails() {
-    use hnl_engine_codegen::{EmitContext, Emitter as _};
+    use hnl_tool_codegen::{EmitContext, Emitter as _};
 
     let err = LlvmCompiler::new()
         .materialize(&Term::constant(Value::Null), &EmitContext::new())
@@ -295,7 +295,7 @@ fn materialize_without_inkwell_feature_fails() {
 #[cfg(feature = "inkwell")]
 #[test]
 fn materialize_matches_compile_artifact() {
-    use hnl_engine_codegen::{EmitContext, Emitter as _};
+    use hnl_tool_codegen::{EmitContext, Emitter as _};
 
     let term = Term::constant(Value::Null);
     let compiler = LlvmCompiler::with_writer(MockWriter);
@@ -315,7 +315,7 @@ fn materialize_matches_compile_artifact() {
 #[cfg(feature = "inkwell")]
 #[test]
 fn materialize_honours_ctx_target_and_passes() {
-    use hnl_engine_codegen::{EmitContext, Emitter as _};
+    use hnl_tool_codegen::{EmitContext, Emitter as _};
 
     /// Writer that records the triple/passes it was asked to emit.
     #[derive(Debug)]

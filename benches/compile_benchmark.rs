@@ -8,7 +8,7 @@ use handl_language::{Ast, AstNode, Language};
 use handl_plugin_compile::{Compiler, CompilerInput};
 use handl_plugin_compile_llvm::{LlvmCompiler, LlvmConfig, X86_64};
 use hnl_engine::Term;
-use hnl_engine_typecheck::TypecheckReport;
+use hnl_tool_typecheck::TypecheckReport;
 use serde_json::Value;
 
 fn make_input(term: Term) -> CompilerInput {
