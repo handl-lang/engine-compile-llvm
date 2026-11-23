@@ -1,8 +1,8 @@
 //! Lowering for primitive `Term` combinators.
 
 use handl_plugin_compile::CompileError;
-use inkwell::values::{BasicValueEnum, PointerValue};
 use hnl_engine::Term;
+use inkwell::values::{BasicValueEnum, PointerValue};
 
 use crate::lower::{LlvmContext, lower_term};
 

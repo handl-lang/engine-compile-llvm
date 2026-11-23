@@ -10,9 +10,9 @@ pub mod proof;
 #[cfg(feature = "inkwell")]
 use handl_plugin_compile::CompileError;
 #[cfg(feature = "inkwell")]
-use inkwell::values::{BasicValueEnum, PointerValue};
-#[cfg(feature = "inkwell")]
 use hnl_engine::Term;
+#[cfg(feature = "inkwell")]
+use inkwell::values::{BasicValueEnum, PointerValue};
 
 /// Compilation context for the current LLVM module.
 #[cfg(feature = "inkwell")]
