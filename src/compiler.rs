@@ -2,9 +2,7 @@
 
 use handl_plugin_compile::{CompileError, Compiler, CompilerConfig, CompilerInput, CompilerOutput};
 use hnl_engine::Term;
-use hnl_tool_codegen::{
-    ArtifactRef, Change, CodegenError, EmitContext, Emitter as CodegenEmitter,
-};
+use hnl_tool_codegen::{ArtifactRef, Change, CodegenError, EmitContext, Emitter as CodegenEmitter};
 
 use crate::config::{AArch64, LlvmConfig, LlvmTarget, X86_64};
 use crate::emit::{DefaultObjectWriter, ObjectWriter};
